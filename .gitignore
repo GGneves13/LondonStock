@@ -1,0 +1,9 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/LondonStockUnitTests/obj
+/LondonStockUnitTests/bin/Debug/net6.0
+/LondonStock/obj
+/LondonStock/bin/Debug/net6.0
+/.vs
