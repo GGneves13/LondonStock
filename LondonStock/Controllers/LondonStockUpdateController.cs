@@ -9,34 +9,20 @@ namespace teste.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LondonStockController : ControllerBase
+    public class LondonStockUpdateController : ControllerBase
     {
-        private readonly ILogger<LondonStockController> _logger;
+        private readonly ILogger<LondonStockUpdateController> _logger;
         private readonly IStockRepository _stockRepo;
         private readonly IOrderServices _orderServices;
 
-        public LondonStockController(
-            ILogger<LondonStockController> logger,
+        public LondonStockUpdateController(
+            ILogger<LondonStockUpdateController> logger,
             IStockRepository stockRepo,
             IOrderServices orderServices)
         {
             _logger = logger;
             _stockRepo = stockRepo;
             _orderServices = orderServices;
-        }
-
-        [HttpGet]
-        [Route("GetAllStocks")]
-        public IEnumerable<Stock> Get()
-        {
-            return _stockRepo.GetStocks();
-        }
-
-        [HttpPost]
-        [Route("GetStocks")]
-        public IEnumerable<Stock> Get(List<string> stockSymbols)
-        {
-            return _stockRepo.GetStocks().Where(s => stockSymbols.Contains(s.StockSymbol));
         }
 
         [HttpPost]
