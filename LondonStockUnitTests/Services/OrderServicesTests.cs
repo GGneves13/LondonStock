@@ -10,7 +10,7 @@ using LondonStock.Services.Interfaces;
 using NSubstitute;
 using LondonStock.Classes;
 
-namespace LondonStockUnitTests.Repositories
+namespace LondonStockUnitTests.Services
 {
     public class OrderServicesTests
     {
@@ -35,14 +35,14 @@ namespace LondonStockUnitTests.Repositories
             //Arrange
             var orderList = CreateOrders();
             var order = new Order { BrokerId = 1, NumberOfShares = 2, Price = 20, StockId = 1 };
-            _orderRepo.GetOrders().Returns(orderList);
+            _orderRepo.GetOrdersAsync().Returns(orderList);
 
             //Act
             _services.AddOrder(order);
 
             //Assert
-            _orderRepo.Received(1).GetOrders();
-            _orderRepo.Received(1).AddOrder(Arg.Is<Order>(o => o.Id == orderList.Count() + 1
+            _orderRepo.Received(1).GetOrdersAsync();
+            _orderRepo.Received(1).AddOrderAsync(Arg.Is<Order>(o => o.Id == orderList.Count() + 1
                                                             && o.BrokerId == order.BrokerId
                                                             && o.NumberOfShares == order.NumberOfShares
                                                             && o.Price == order.Price
@@ -55,6 +55,7 @@ namespace LondonStockUnitTests.Repositories
             //Arrange
             var orderList = CreateOrders();
             var stockId = 1;
+            var stock = new Stock { Id = 1 };
             var newExpectedValues = orderList.Where(o => o.StockId == stockId)
                 .GroupBy(r => 1)
                 .Select(g => new
@@ -63,14 +64,16 @@ namespace LondonStockUnitTests.Repositories
                     SumNumberOfShares = g.Sum(x => x.NumberOfShares)
                 }).First();
 
-            _orderRepo.GetOrders().Returns(orderList);
+            _orderRepo.GetLocalOrders().Returns(orderList);
+            _stockRepo.GetStockByIdAsync(stockId).Returns(stock);
 
             //Act
             _services.CalculateNewStockPrice(stockId);
 
             //Assert
-            _orderRepo.Received(1).GetOrders();
-            _stockRepo.Received(1).UpdateStockPriceById(stockId, newExpectedValues.SumPrice / newExpectedValues.SumNumberOfShares);
+            _orderRepo.Received(1).GetLocalOrders();
+            _stockRepo.Received(1).UpdateStock(Arg.Is<Stock>(o => o.Id == stockId
+                                                            && o.Value == newExpectedValues.SumPrice / newExpectedValues.SumNumberOfShares));
         }
 
         private List<Order> CreateOrders()

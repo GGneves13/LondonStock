@@ -4,10 +4,10 @@ namespace LondonStock.Repositories.Interfaces
 {
     public interface IStockRepository
     {
-        List<Stock> GetStocks();
-
-        void AddStock(Stock stock);
-
-        void UpdateStockPriceById(int id, decimal price);
+        Task<List<Stock>> GetStocksAsync();
+        Task<Stock> GetStockByIdAsync(int id);
+        Task AddStockAsync(Stock stock);
+        void UpdateStock(Stock stock);
+        Task UpdateStockPriceByIdAsync(int id, decimal price);
     }
 }

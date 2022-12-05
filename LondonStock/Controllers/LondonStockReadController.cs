@@ -24,16 +24,16 @@ namespace LondonStock.Controllers
 
         [HttpGet]
         [Route("GetAllStocks")]
-        public IEnumerable<Stock> Get()
+        public async Task<IEnumerable<Stock>> Get()
         {
-            return _stockRepo.GetStocks();
+            return await _stockRepo.GetStocksAsync();
         }
 
         [HttpPost]
         [Route("GetStocks")]
-        public IEnumerable<Stock> Get(List<string> stockSymbols)
+        public async Task<IEnumerable<Stock>> Get(List<string> stockSymbols)
         {
-            return _stockRepo.GetStocks().Where(s => stockSymbols.Contains(s.StockSymbol));
+            return (await _stockRepo.GetStocksAsync()).Where(s => stockSymbols.Contains(s.StockSymbol));
         }
     }
 }

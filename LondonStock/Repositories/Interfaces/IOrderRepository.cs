@@ -4,8 +4,10 @@ namespace LondonStock.Repositories.Interfaces
 {
     public interface IOrderRepository
     {
-        void AddOrder(Order order);
+        Task AddOrderAsync(Order order);
 
-        List<Order> GetOrders();
+        Task<List<Order>> GetOrdersAsync();
+
+        List<Order> GetLocalOrders();
     }
 }

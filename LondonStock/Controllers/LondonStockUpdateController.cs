@@ -12,55 +12,59 @@ namespace LondonStock.Controllers
     public class LondonStockUpdateController : ControllerBase
     {
         private readonly ILogger<LondonStockUpdateController> _logger;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IStockRepository _stockRepo;
         private readonly IOrderServices _orderServices;
 
         public LondonStockUpdateController(
             ILogger<LondonStockUpdateController> logger,
+            IUnitOfWork unitOfWork,
             IStockRepository stockRepo,
             IOrderServices orderServices)
         {
             _logger = logger;
+            _unitOfWork = unitOfWork;
             _stockRepo = stockRepo;
             _orderServices = orderServices;
         }
 
         [HttpPost]
         [Route("AddNewStock")]
-        public HttpResponseMessage AddNewStock(string stockSymbol, decimal value)
+        public async Task<HttpResponseMessage> AddNewStock(string stockSymbol, decimal value)
         {
             if(stockSymbol?.Length == 0)
                 return NewHttpResponseMessage(HttpStatusCode.BadRequest, "Invalid stockSymbol.");
 
-            var stock = _stockRepo.GetStocks().FirstOrDefault(s => s.StockSymbol == stockSymbol);
+            if (value <= 0)
+                return NewHttpResponseMessage(HttpStatusCode.BadRequest, "Invalid stock value.");
+
+            var stock = (await _stockRepo.GetStocksAsync()).FirstOrDefault(s => s.StockSymbol == stockSymbol);
 
             if (stock != null)
                 return NewHttpResponseMessage(HttpStatusCode.BadRequest, "LondonStock already trades this stock");
 
-            if (value <= 0)
-                return NewHttpResponseMessage(HttpStatusCode.BadRequest, "Invalid stock value.");
-
-            _stockRepo.AddStock(
+            await _stockRepo.AddStockAsync(
                 new Stock
                 {
-                    Id = _stockRepo.GetStocks().Count + 1,
+                    Id = (await _stockRepo.GetStocksAsync()).Count + 1,
                     StockSymbol = stockSymbol,
                     Value = value,
                     Currency = "GBP"
-                }
-                );
+                });
+
+            await _unitOfWork.CompleteAsync();
 
             return NewHttpResponseMessage(HttpStatusCode.OK, "Stock was added successfully.");
         }
 
         [HttpPost]
         [Route("AddNewOrder")]
-        public HttpResponseMessage AddNewOrder(string stockSymbol, decimal price, decimal numberOfShares, int brokerId)
+        public async Task<HttpResponseMessage> AddNewOrder(string stockSymbol, decimal price, decimal numberOfShares, int brokerId)
         {
             if (stockSymbol?.Length == 0)
                 return NewHttpResponseMessage(HttpStatusCode.BadRequest, "Invalid order stockSymbol");
 
-            var stock = _stockRepo.GetStocks().FirstOrDefault(s => s.StockSymbol == stockSymbol);
+            var stock = (await _stockRepo.GetStocksAsync()).FirstOrDefault(s => s.StockSymbol == stockSymbol);
 
             if (stock == null)
                 return NewHttpResponseMessage(HttpStatusCode.BadRequest, "LondonStock doesnt trade this stock yet");
@@ -84,6 +88,8 @@ namespace LondonStock.Controllers
                 });
 
             _orderServices.CalculateNewStockPrice(stock.Id);
+
+            await _unitOfWork.CompleteAsync();
 
             return NewHttpResponseMessage(HttpStatusCode.OK, "Order was added successfully.");
         }

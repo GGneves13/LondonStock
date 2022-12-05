@@ -1,5 +1,6 @@
 ﻿using LondonStock.Classes;
 using LondonStock.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace LondonStock.Repositories
 {
@@ -11,23 +12,34 @@ namespace LondonStock.Repositories
             _context = context;
         }
 
-        public void AddStock(Stock stock)
+        public async Task AddStockAsync(Stock stock)
         {
-            _context.Stocks.Add(stock);
-            _context.SaveChanges();
+            await _context.Stocks.AddAsync(stock);
+            //_context.SaveChanges();
         }
 
-        public List<Stock> GetStocks()
+        public void UpdateStock(Stock stock)
         {
-            return _context.Stocks.ToList();
+            _context.Stocks.Update(stock);
+            //_context.SaveChanges();
         }
 
-        public void UpdateStockPriceById(int id, decimal price)
+        public async Task<List<Stock>> GetStocksAsync()
         {
-            var stock = _context.Stocks.First(s => s.Id == id);
+            return await _context.Stocks.ToListAsync();
+        }
+
+        public async Task<Stock> GetStockByIdAsync(int id)
+        {
+            return await _context.Stocks.FirstAsync(s => s.Id == id);
+        }
+
+        public async Task UpdateStockPriceByIdAsync(int id, decimal price)
+        {
+            var stock = await _context.Stocks.FirstAsync(s => s.Id == id);
             
             stock.Value = price;
-            _context.SaveChanges();
+            //_context.SaveChanges();
         }
     }
 }

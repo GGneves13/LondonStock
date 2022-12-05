@@ -20,15 +20,15 @@ namespace LondonStock.Services
             _orderRepo = orderRepo;
         }
 
-        public void AddOrder(Order order)
+        public async void AddOrder(Order order)
         {
-            order.Id = _orderRepo.GetOrders().Count() + 1;
-            _orderRepo.AddOrder(order);
+            order.Id = (await _orderRepo.GetOrdersAsync()).Count() + 1;
+            await _orderRepo.AddOrderAsync(order);
         }
 
-        public void CalculateNewStockPrice(int stockId)
+        public async void CalculateNewStockPrice(int stockId)
         {
-            var sums = _orderRepo.GetOrders()
+            var sums = _orderRepo.GetLocalOrders()
                 .Where(o => o.StockId == stockId)
                 .GroupBy(r => 1)
                 .Select(g => new
@@ -37,7 +37,10 @@ namespace LondonStock.Services
                     SumNumberOfShares = g.Sum(x => x.NumberOfShares)
                 }).First();
 
-            _stockRepo.UpdateStockPriceById(stockId, sums.SumPrice / sums.SumNumberOfShares);
+            var stock = await _stockRepo.GetStockByIdAsync(stockId);
+            stock.Value = sums.SumPrice / sums.SumNumberOfShares;
+
+            _stockRepo.UpdateStock(stock);
         }
     }
 }

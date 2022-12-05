@@ -1,5 +1,6 @@
 ﻿using LondonStock.Classes;
 using LondonStock.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace LondonStock.Repositories
 {
@@ -11,15 +12,20 @@ namespace LondonStock.Repositories
             _context = context;
         }
 
-        public void AddOrder(Order order)
+        public async Task AddOrderAsync(Order order)
         {
-            _context.Orders.Add(order);
-            _context.SaveChanges();
+            await _context.Orders.AddAsync(order);
+            //_context.SaveChanges();
         }
 
-        public List<Order> GetOrders()
+        public async Task<List<Order>> GetOrdersAsync()
         {
-            return _context.Orders.ToList();
+            return await _context.Orders.ToListAsync();
+        }
+
+        public List<Order> GetLocalOrders()
+        {
+            return _context.Orders.Local.ToList();
         }
     }
 }
