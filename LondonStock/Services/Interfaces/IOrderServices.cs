@@ -1,9 +1,11 @@
-﻿using teste.Classes;
+﻿using LondonStock.Classes;
 
-namespace teste.Services.Interfaces
+namespace LondonStock.Services.Interfaces
 {
     public interface IOrderServices
     {
         void AddOrder(Order order);
+
+        void CalculateNewStockPrice(int stockId);
     }
 }

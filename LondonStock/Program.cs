@@ -1,9 +1,9 @@
 
 using Microsoft.EntityFrameworkCore;
-using teste.Repositories;
-using teste.Repositories.Interfaces;
-using teste.Services;
-using teste.Services.Interfaces;
+using LondonStock.Repositories;
+using LondonStock.Repositories.Interfaces;
+using LondonStock.Services;
+using LondonStock.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using teste.Classes;
+using LondonStock.Classes;
 
-namespace teste.Repositories
+namespace LondonStock.Repositories
 {
     public class ApiContext : DbContext
     {

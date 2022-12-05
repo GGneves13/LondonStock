@@ -1,6 +1,6 @@
-﻿using teste.Classes;
+﻿using LondonStock.Classes;
 
-namespace teste.Repositories.Interfaces
+namespace LondonStock.Repositories.Interfaces
 {
     public interface IOrderRepository
     {

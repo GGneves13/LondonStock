@@ -1,9 +1,9 @@
-﻿using teste.Classes;
-using teste.Controllers;
-using teste.Repositories.Interfaces;
-using teste.Services.Interfaces;
+﻿using LondonStock.Classes;
+using LondonStock.Controllers;
+using LondonStock.Repositories.Interfaces;
+using LondonStock.Services.Interfaces;
 
-namespace teste.Services
+namespace LondonStock.Services
 {
     public class OrderServices : IOrderServices
     {
@@ -24,9 +24,12 @@ namespace teste.Services
         {
             order.Id = _orderRepo.GetOrders().Count() + 1;
             _orderRepo.AddOrder(order);
+        }
 
+        public void CalculateNewStockPrice(int stockId)
+        {
             var sums = _orderRepo.GetOrders()
-                .Where(o => o.StockId == order.StockId)
+                .Where(o => o.StockId == stockId)
                 .GroupBy(r => 1)
                 .Select(g => new
                 {
@@ -34,7 +37,7 @@ namespace teste.Services
                     SumNumberOfShares = g.Sum(x => x.NumberOfShares)
                 }).First();
 
-            _stockRepo.UpdateStockPriceById(order.StockId, sums.SumPrice / sums.SumNumberOfShares);
+            _stockRepo.UpdateStockPriceById(stockId, sums.SumPrice / sums.SumNumberOfShares);
         }
     }
 }

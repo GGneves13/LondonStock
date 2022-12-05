@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace teste.Classes
+namespace LondonStock.Classes
 {
     public class Order
     {

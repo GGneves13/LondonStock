@@ -1,7 +1,7 @@
-﻿using teste.Classes;
-using teste.Repositories.Interfaces;
+﻿using LondonStock.Classes;
+using LondonStock.Repositories.Interfaces;
 
-namespace teste.Repositories
+namespace LondonStock.Repositories
 {
     public class StockRepository : IStockRepository
     {

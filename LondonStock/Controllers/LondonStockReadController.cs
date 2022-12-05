@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.InMemory.Query.Internal;
 using System.Net;
-using teste.Classes;
-using teste.Repositories.Interfaces;
-using teste.Services.Interfaces;
+using LondonStock.Classes;
+using LondonStock.Repositories.Interfaces;
+using LondonStock.Services.Interfaces;
 
-namespace teste.Controllers
+namespace LondonStock.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
